@@ -21,16 +21,14 @@ def dict_factory(cursor, row):
 def home():
     conn = sqlite3.connect('leaguemate.db')
 
-    #Display all blogs from the 'blogs' table
-    conn.row_factory = dict_factory
-    c = conn.cursor()
-    c.execute("SELECT * FROM blogs")
-    posts = c.fetchall()
-    return render_template('home.html', posts=posts)
+    # conn.row_factory = dict_factory
+    # c = conn.cursor()
+    # c.execute("SELECT * FROM blogs")
+    # posts = c.fetchall()
+    return render_template('profile.html')
 
 @app.route("/login", methods=['GET', 'POST'])
-def login():
-    
+def login():   
     form = LoginForm()
     error = None
 
@@ -40,15 +38,16 @@ def login():
 
         #check database for user account
         query = "SELECT userID from UserAccount where userName=(?)"
-        c.execute(query, (form.username.data))
-        conn.comit()
+        c.execute(query, (form.username.data,))
+        
+        conn.commit()
         results = c.fetchall()
-        if not results:
-            error = 'Incorrect Username'
+        if len(results) == 0:
+            flash(f'Incorrect Username #results: {len(results)}')
         else:
-            error = 'Logged in Successfully'
-    
-    return render_template('login.html', error=error)
+            flash(f'Logged in Successfully #results: {len(results)}')
+    print(error)
+    return render_template('login.html', title='Login', form=form, error=error)
 
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
