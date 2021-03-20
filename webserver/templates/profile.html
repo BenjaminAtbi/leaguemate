@@ -9,5 +9,11 @@
         <p class="article-content">email: {{ userdata[0].email }}</p>
       </div>
     </article>
+  {% else %}
+  <article class="media content-section">
+    <div class="media-body">
+      <h2><a class="article-title" href="#">No user selected</a></h2>
+    </div>
+  </article>
   {% endif %}
 {% endblock content %}
