@@ -1,15 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-  <p> nothing here rn </p>
-    <!-- {% for post in posts %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#">{{ post.username }}</a>
-            </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
-          </div>
-        </article>
-    {% endfor %} -->
+  {% if userdata %}
+    <article class="media content-section">
+      <div class="media-body">
+        <h2><a class="article-title" href="#">{{ userdata[0].leagueID }}</a></h2>
+        <p class="article-content">username: {{ userdata[0].userName }}</p>
+        <p class="article-content">region: {{ userdata[0].gameServer }}</p>
+        <p class="article-content">email: {{ userdata[0].email }}</p>
+      </div>
+    </article>
+  {% endif %}
 {% endblock content %}

@@ -1,7 +1,7 @@
 ### Example inspired by Tutorial at https://www.youtube.com/watch?v=MwZwr5Tvyxo&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH
 ### However the actual example uses sqlalchemy which uses Object Relational Mapper, which are not covered in this course. I have instead used natural sQL queries for this demo. 
 
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, url_for, flash, redirect, request
 from forms import LoginForm, RegistrationForm, BlogForm
 import sqlite3
 
@@ -18,36 +18,42 @@ def dict_factory(cursor, row):
 
 @app.route("/")
 @app.route("/profile")
-def home():
+def profile():
     conn = sqlite3.connect('leaguemate.db')
+    conn.row_factory = dict_factory
+    c = conn.cursor()
+    
+    username = request.args.get('username')
+    userdata = None
+    if username:
+        query = "SELECT * from UserAccount where userName=(?)"
+        c.execute(query, (username,))
+        userdata = c.fetchall()
 
-    # conn.row_factory = dict_factory
-    # c = conn.cursor()
-    # c.execute("SELECT * FROM blogs")
-    # posts = c.fetchall()
-    return render_template('profile.html')
+        print(f"username: {username}, data: {userdata}")
+    return render_template('profile.html', userdata=userdata )
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():   
     form = LoginForm()
-    error = None
 
     if form.validate_on_submit():
         conn = sqlite3.connect('leaguemate.db')
         c = conn.cursor()
 
         #check database for user account
-        query = "SELECT userID from UserAccount where userName=(?)"
+        query = "SELECT userName from UserAccount where userName=(?)"
         c.execute(query, (form.username.data,))
         
         conn.commit()
         results = c.fetchall()
+        print(f"results: {results}")
         if len(results) == 0:
-            flash(f'Incorrect Username #results: {len(results)}')
+            flash(f'Incorrect Username')
         else:
-            flash(f'Logged in Successfully #results: {len(results)}')
-    print(error)
-    return render_template('login.html', title='Login', form=form, error=error)
+            flash(f'Logged in Successfully')
+            return redirect(url_for('profile', username=results[0]))
+    return render_template('login.html', title='Login', form=form)
 
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
