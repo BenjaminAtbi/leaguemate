@@ -1,0 +1,9 @@
+drop table if exists LeagueAccountRank;
+drop table if exists PreferMatch;
+drop table if exists UserAccountFriendList;
+drop table if exists UserAccount;
+drop table if exists Champions;
+drop table if exists Chat;
+drop table if exists MatchUsers;
+drop table if exists CreateChat;
+drop table if exists LeagueAccount;

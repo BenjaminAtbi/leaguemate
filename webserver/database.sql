@@ -11,11 +11,10 @@ CREATE TABLE IF NOT EXISTS LeagueAccountRank (
     accountRank varchar(10),  
     rankQueue varchar(30),  
     PRIMARY KEY (leagueID, accountRank),
-    CONSTRAINT LeagueID_FK FOREIGN KEY (leagueID) REFERENCES LeagueAccount(LeagueID) 
-        ON UPDATE CASCADE);
+    CONSTRAINT LeagueID_FK FOREIGN KEY (leagueID) REFERENCES LeagueAccount(LeagueID) ON UPDATE CASCADE);
 
 CREATE TABLE IF NOT EXISTS UserAccount (
-    userID int NOT NULL,
+    userID int(9) NOT NULL,
     email varchar(50) NOT NULL,
     userName varchar(15)	NOT NULL,
     dateOfBirth	DATE,	          	
@@ -23,29 +22,27 @@ CREATE TABLE IF NOT EXISTS UserAccount (
     userPassword varchar(30) NOT NULL,
     leagueID varchar(50) NOT NULL,
     PRIMARY KEY (userID),
-    CONSTRAINT UserLeagueID_FK FOREIGN KEY (leagueID) REFERENCES LeagueAccount (leagueID) 
-        ON UPDATE CASCADE);
+    CONSTRAINT UserLeagueID_FK FOREIGN KEY (leagueID) REFERENCES LeagueAccount (leagueID) ON UPDATE CASCADE,
+    CONSTRAINT limitConnectedAcct UNIQUE (userID, leagueID));
 
 CREATE TABLE IF NOT EXISTS UserAccountFriendList (
     userID int NOT NULL,
     friendID int NOT NULL,
-    friendName varchar(15) NOT NULL,
     PRIMARY KEY (userID, friendID),
-    CONSTRAINT userFriendID_FK FOREIGN KEY (userID) REFERENCES UserAccount (userID) 
+    CONSTRAINT userAcctID_FK FOREIGN KEY (userID) REFERENCES UserAccount (userID) 
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT userFriendID_FK FOREIGN KEY (friendID) REFERENCES UserAccount (userID) 
+    CONSTRAINT friendAcctID_FK FOREIGN KEY (friendID) REFERENCES UserAccount (userID) 
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT userFriendName_FK FOREIGN KEY (friendName) REFERENCES UserAccount (userName) 
-        ON UPDATE CASCADE);
+        ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS PreferMatch (
     userID int NOT NULL,
     preferredPosition varchar(8),
     rankRange varchar(15),
-    PRIMARY KEY (userID, preferredPosition, rankRange),
-    CONSTRAINT userIDMatch_FK FOREIGN KEY (userID) REFERENCES UserAccount (userID) ON UPDATE CASCADE 
+    PRIMARY KEY (preferredPosition),
+    CONSTRAINT userIDMatch_FK FOREIGN KEY (userID) REFERENCES UserAccount (userID) 
+        ON UPDATE CASCADE 
         ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS Champions (
@@ -81,13 +78,12 @@ CREATE TABLE IF NOT EXISTS CreateChat (
     CONSTRAINT createChatUserID_FK FOREIGN KEY (userID) REFERENCES UserAccount (userID)
         ON UPDATE CASCADE 
         ON DELETE CASCADE,
-    CONSTRAINT createChatRecepientID_FK FOREIGN KEY (recepientID) REFERENCES Chat (recepientID) 
-        ON UPDATE CASCADE);
+    CONSTRAINT createChatRecepientID_FK FOREIGN KEY (recepientID) REFERENCES Chat (recepientID) ON UPDATE CASCADE);
 
 /* Populate tables*/
 
 -- Adding values to table LeagueAccount
-INSERT INTO LeagueAccount (leagueID gameLevel, champion, gameRole, TFTrank) VALUES 
+INSERT INTO LeagueAccount (leagueID, gameLevel, champion, gameRole, TFTrank) VALUES 
 ('Jamo1Yips', 23, 'Sona', 'Support/Mage', NULL),
 ('Saltern88', 122, 'Gnar', 'Fighter/Tank', NULL),
 ('21preterite', 150, 'Nami', 'Support/Mage', NULL),
@@ -96,11 +92,11 @@ INSERT INTO LeagueAccount (leagueID gameLevel, champion, gameRole, TFTrank) VALU
 
 -- Adding values to table LeagueAccount
 INSERT INTO LeagueAccountRank (leagueID, accountRank, rankQueue) VALUES
-('Jamo1Yips', NULL, NULL, NULL),
+('Jamo1Yips', NULL, NULL),
 ('Saltern88', 'Platinum II', 'Solo/Duo'),
 ('21preterite', 'Diamond V', 'Flex'),
 ('Foofarraw', 'Gold IV', 'Flex'),
-('Versant', 200, 'Diamond I', 'Solo/Duo');
+('Versant', 'Diamond I', 'Solo/Duo');
 
 -- Adding values to table UserAccount
 INSERT INTO UserAccount (userID, email, userName, dateOfBirth, gameServer, userPassword, leagueID) VALUES
@@ -111,16 +107,16 @@ INSERT INTO UserAccount (userID, email, userName, dateOfBirth, gameServer, userP
 (456789012, 'avarehonore@hotmail.com', 'Acare Honore', '1988-05-05', 'North America', 'versanthonore8', 'Versant');
 
 -- Adding values to table UserAccountFriendList
-INSERT INTO UserAccountFriendList (userID, friendID, userName, friendName) VALUES
-(123456789, 234567890,'Bob Williams','Antonio Brown'),
-(123456789, 345678901,'Bob Williams','Peter Jones'),
-(123456789, 012345678,'Bob Williams','Jun-soo Lee'),
-(123456789, 456789012,'Bob Williams','Acare Honore'),
-(456789012, 345678901,'Acare Honore','Peter Jones');
+INSERT INTO UserAccountFriendList (userID, friendID) VALUES
+(123456789, 234567890),
+(123456789, 345678901),
+(123456789, 012345678),
+(123456789, 456789012),
+(456789012, 345678901);
 
 -- Adding values to table PreferMatch
-INSERT INTO PreferMatch (userID, preferrePosition, rankRange) VALUES
-(012345678, 'Marksman', NULL),
+INSERT INTO PreferMatch (userID, preferredPosition, rankRange) VALUES
+(012345678, 'Marksman', 'Iron'),
 (123456789, 'Mage', 'Platinum'),
 (234567890, 'Fighter', 'Diamond'),
 (345678901, 'Marksman', 'Gold'),
@@ -157,5 +153,3 @@ INSERT INTO CreateChat (userID, recepientID, createdTimestamp) VALUES
 (123456789, 012345678, '2020-03-15 19:07:12'),
 (123456789, 456789012, '2020-03-13 15:27:52'),
 (456789012, 345678901, '2020-03-11 08:20:54');
-
-
