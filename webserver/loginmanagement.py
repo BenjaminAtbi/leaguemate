@@ -27,7 +27,7 @@ def getUser(arg, query):
     userdata = c.fetchall()
     if(userdata):
         user = User()
-        user.id = userdata[0]['id']
+        user.id = userdata[0]['userID']
         user.email = userdata[0]['email']
         user.userName = userdata[0]['userName']
         user.DateOfBirth = userdata[0]['dateOfBirth']
