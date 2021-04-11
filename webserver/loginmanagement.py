@@ -18,16 +18,16 @@ class User(UserMixin):
     password = None
     leagueID = None
 
-def getUser(id):
+def getUser(arg, query):
     conn = sqlite3.connect('leaguemate.db')
     conn.row_factory = dict_factory
     c = conn.cursor()
     query = "SELECT * from UserAccount where userID=(?)"
-    c.execute(query, (id,))
+    c.execute(query, (arg,))
     userdata = c.fetchall()
     if(userdata):
         user = User()
-        user.id = id
+        user.id = userdata[0]['id']
         user.email = userdata[0]['email']
         user.userName = userdata[0]['userName']
         user.DateOfBirth = userdata[0]['dateOfBirth']
@@ -37,6 +37,12 @@ def getUser(id):
         return user
     else:
         return None
+
+def getUserbyID(id):
+    return getUser(id, "SELECT * from UserAccount where userID=(?)")
+
+def getUserbyName(username):
+    return getUser(username, "SELECT * from UserAccount where userName=(?)")
 
 def MakeLoginManager(app):
     login = LoginManager()

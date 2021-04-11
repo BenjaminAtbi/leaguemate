@@ -3,7 +3,7 @@
 
 from flask import Flask, render_template, url_for, flash, redirect, request
 from forms import LoginForm, RegistrationForm, BlogForm
-from loginmanagement import getUser
+from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
 
 conn = sqlite3.connect('leaguemate.db')
