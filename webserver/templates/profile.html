@@ -1,19 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-  {% if userdata %}
     <article class="media content-section">
       <div class="media-body">
-        <h2><a class="article-title" href="#">{{ userdata[0].leagueID }}</a></h2>
-        <p class="article-content">username: {{ userdata[0].userName }}</p>
-        <p class="article-content">region: {{ userdata[0].gameServer }}</p>
-        <p class="article-content">email: {{ userdata[0].email }}</p>
+        {% if current_user.is_authenticated %}
+          <h2><a class="article-title" href="#">{{ current_user.leagueID }}</a></h2>
+          <p class="article-content">username: {{ current_user.userName }}</p>
+          <p class="article-content">region: {{ current_user.gameServer }}</p>
+          <p class="article-content">email: {{ current_user.email }}</p>
+        {% else %}
+          <h2><a class="article-title" href="#">Not logged in</a></h2>
+        {% endif %}
       </div>
     </article>
-  {% else %}
-  <article class="media content-section">
-    <div class="media-body">
-      <h2><a class="article-title" href="#">No user selected</a></h2>
-    </div>
-  </article>
-  {% endif %}
 {% endblock content %}

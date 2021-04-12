@@ -1,4 +1,4 @@
-from flask_login import LoginManager, UserMixin
+from flask_login import UserMixin
 import sqlite3
 
 #Turn the results from the database into a dictionary
@@ -22,12 +22,11 @@ def getUser(arg, query):
     conn = sqlite3.connect('leaguemate.db')
     conn.row_factory = dict_factory
     c = conn.cursor()
-    query = "SELECT * from UserAccount where userID=(?)"
     c.execute(query, (arg,))
     userdata = c.fetchall()
     if(userdata):
         user = User()
-        user.id = userdata[0]['id']
+        user.id = userdata[0]['userID']
         user.email = userdata[0]['email']
         user.userName = userdata[0]['userName']
         user.DateOfBirth = userdata[0]['dateOfBirth']
@@ -43,13 +42,3 @@ def getUserbyID(id):
 
 def getUserbyName(username):
     return getUser(username, "SELECT * from UserAccount where userName=(?)")
-
-def MakeLoginManager(app):
-    login = LoginManager()
-    login.init_app(app)
-
-    @login.user_loader
-    def load_user(id):
-        return getUser(id)
-
-
