@@ -2,7 +2,7 @@
 ### However the actual example uses sqlalchemy which uses Object Relational Mapper, which are not covered in this course. I have instead used natural sQL queries for this demo. 
 
 from flask import Flask, render_template, url_for, flash, redirect, request
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import LoginForm, RegistrationForm, BlogForm
 from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
@@ -49,6 +49,13 @@ def login():
             flash(f'Logged in Successfully')
             return redirect(url_for('profile'))
     return render_template('login.html', title='Login', form=form)
+
+@app.route("/logout")
+def logout():   
+    logout_user()
+    print("loggin out")
+    return redirect(url_for("profile"))
+
 
 
 @app.route("/debug")
