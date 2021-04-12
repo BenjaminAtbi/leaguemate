@@ -2,6 +2,7 @@
 ### However the actual example uses sqlalchemy which uses Object Relational Mapper, which are not covered in this course. I have instead used natural sQL queries for this demo. 
 
 from flask import Flask, render_template, url_for, flash, redirect, request
+from flask_login import LoginManager, login_user, current_user
 from forms import LoginForm, RegistrationForm, BlogForm
 from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
@@ -10,6 +11,14 @@ conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
+#manage logged in users
+login_manager = LoginManager(app)
+
+@login_manager.user_loader
+def load_user(id):
+    user = getUserbyID(id)
+    return user
+
 #Turn the results from the database into a dictionary
 def dict_factory(cursor, row):
     d = {}
@@ -17,44 +26,35 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+######## Route URLS ###################
+
 @app.route("/")
 @app.route("/profile")
 def profile():
-    conn = sqlite3.connect('leaguemate.db')
-    conn.row_factory = dict_factory
-    c = conn.cursor()
-    
-    username = request.args.get('username')
-    userdata = None
-    if username:
-        query = "SELECT * from UserAccount where userName=(?)"
-        c.execute(query, (username,))
-        userdata = c.fetchall()
+    return render_template('profile.html')
 
-        print(f"username: {username}, data: {userdata}")
-    return render_template('profile.html', userdata=userdata )
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():   
     form = LoginForm()
 
     if form.validate_on_submit():
-        conn = sqlite3.connect('leaguemate.db')
-        c = conn.cursor()
-
-        #check database for user account
-        query = "SELECT userName from UserAccount where userName=(?)"
-        c.execute(query, (form.username.data,))
-        
-        conn.commit()
-        results = c.fetchall()
-        print(f"results: {results}")
-        if len(results) == 0:
+        user = getUserbyName(form.username.data)
+        if not user:
             flash(f'Incorrect Username')
+        elif form.password.data != user.userPassword:
+            flash(f'Incorrect Password')
         else:
+            print("login: ", login_user(user))
             flash(f'Logged in Successfully')
-            return redirect(url_for('profile', username=results[0]))
+            return redirect(url_for('profile'))
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/debug")
+def debug():
+    print("auth: ",current_user, current_user.is_authenticated)
+    return render_template('layout.html', title='Login')
 
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
