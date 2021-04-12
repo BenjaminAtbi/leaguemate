@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_user, current_user
 from forms import LoginForm, RegistrationForm, BlogForm, MatchForm
 from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
+from matchingActivity import getPositionbyInp
 
 conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
@@ -18,6 +19,11 @@ login_manager = LoginManager(app)
 def load_user(id):
     user = getUserbyID(id)
     return user
+
+def load_pPos(id):
+    preferredPos = getPositionbyInp(id)
+    return preferredPos
+
 
 #Turn the results from the database into a dictionary
 def dict_factory(cursor, row):
@@ -32,7 +38,6 @@ def dict_factory(cursor, row):
 @app.route("/profile")
 def profile():
     return render_template('profile.html')
-
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():   
@@ -50,21 +55,35 @@ def login():
             return redirect(url_for('profile'))
     return render_template('login.html', title='Login', form=form)
 
-@app.route("/debug")
-def debug():
-    print("auth: ",current_user, current_user.is_authenticated)
-    return render_template('layout.html', title='Login')
-
 @app.route('/match', methods=['GET', 'POST'])
 def match():
     form = MatchForm()
 
     if form.validate_on_submit():
-        print(form.preferredPosition.data)
-    else:
-        print(form.errors)
+        
+        preferredPos = getPositionbyInp(form.preferredPosition.data)
+
+        if(preferredPos):    
+            conn = sqlite3.connect('leaguemate.db')
+            conn.row_factory=dict_factory
+            c=conn.cursor()
+            #c.execute(preferredPos)
+            #posts=c.fetchall()    
+            posts = preferredPos   
+            
+            return render_template('matchingPage.html', posts=posts)
+
     return render_template('match.html', title='Match', form=form)
 
+
+@app.route("/matchingPage")
+def matchingPage():       
+    return render_template('matchingPage.html')
+
+@app.route("/debug")
+def debug():
+    print("auth: ",current_user, current_user.is_authenticated)
+    return render_template('layout.html', title='Login')
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
 #     form = RegistrationForm()
