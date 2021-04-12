@@ -2,7 +2,8 @@
 ### However the actual example uses sqlalchemy which uses Object Relational Mapper, which are not covered in this course. I have instead used natural sQL queries for this demo. 
 
 from flask import Flask, render_template, url_for, flash, redirect, request
-from forms import LoginForm, RegistrationForm, BlogForm
+from flask_login import LoginManager, login_user, current_user
+from forms import LoginForm, RegistrationForm, BlogForm, MatchForm
 from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
 
@@ -55,6 +56,21 @@ def login():
             flash(f'Logged in Successfully')
             return redirect(url_for('profile', username=results[0]))
     return render_template('login.html', title='Login', form=form)
+
+@app.route('/match', methods=['GET', 'POST'])
+def match():
+    form = MatchForm()
+
+    if form.validate_on_submit():
+        print(form.preferredPosition.data)
+    else:
+        print(form.errors)
+    return render_template('match.html', title='Match', form=form)
+
+@app.route("/debug")
+def debug():
+    print("auth: ",current_user, current_user.is_authenticated)
+    return render_template('layout.html', title='Login')
 
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
