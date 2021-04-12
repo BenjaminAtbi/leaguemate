@@ -4,11 +4,18 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class MatchForm(FlaskForm):
-    preferredPosition = SelectField('Preferred Position', choices=['Support/Mage', 'Figher/Tank'])
-    setPP = SubmitField('Set Preferred Posotopm')
+    preferredPosition = SelectField('Preferred Position', choices=['Controller', 'Fighter', 'Mage', 'Marksman', 'Slayer', 'Specialist', 'Tank'])
+
+    rankRange = SelectField('Rank Range', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
+
+    champions = StringField('Preferred Champion', validators=[DataRequired()])
+
+    save = SubmitField('Save')
+
 
 ###############
 class RegistrationForm(FlaskForm):
