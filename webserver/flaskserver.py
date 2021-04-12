@@ -47,7 +47,7 @@ def login():
         else:
             print("login: ", login_user(user))
             flash(f'Logged in Successfully')
-            # return redirect(url_for('profile'))
+            return redirect(url_for('profile'))
     return render_template('login.html', title='Login', form=form)
 
 
