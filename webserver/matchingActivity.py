@@ -1,5 +1,4 @@
 import sqlite3
-import pandas as pd
 from flask_login import UserMixin
 
 
@@ -13,35 +12,36 @@ def dict_factory(cursor, row):
 #inherit basic flask_login user properties
 class User(UserMixin):
     id = None
-    gameLevel = None
-    champion = None
-    gameRole = None
-    TFTrank = None
-    matchedLeagueid = None
+    matched_matchedLeagueid = None
+    matched_gameLevel = None
+    matched_champion = None
+    matched_gameRole = None
+    matched_TFTrank = None
+    
 
-def getPositionT(arg, query):
+def getPositionT(arg, query, selfID):
     conn = sqlite3.connect('leaguemate.db')
     conn.row_factory = dict_factory
     c = conn.cursor()
-
-    #query and print table with chosen Position
     c.execute(query, (arg,))
-    positiondata = c.fetchall()
-    if(positiondata):
+    userdata = c.fetchall()
+    if(userdata):
         user = User()
-        user.matchedLeagueid = positiondata[0]['leagueID']
-        user.gameLevel = positiondata[0]['gameLevel']
-        user.champion = positiondata[0]['champion']
-        user.gameRole = positiondata[0]['gameRole']
-        user.TFTrank = positiondata[0]['TFTrank']
+        user.id = selfID
+        user.matchedLeagueid = userdata[0]['leagueID']
+        user.matched_gameLevel = userdata[0]['gameLevel']
+        user.matched_champion = userdata[0]['champion']
+        user.matched_gameRole = userdata[0]['gameRole']
+        user.matched_TFTrank = userdata[0]['TFTrank']
+        print(user.matched_champion)
+        print(user.matched_matchedLeagueid)
+        print(user.matched_gameLevel)
         return user
     else:
         return None
 
-    return positiondata
-
-def getPositionbyInp(id):
-    return getPositionT(id, "SELECT * from LeagueAccount WHERE gameRole=(?)")
+def getPositionbyInp(id, selfID):
+    return getPositionT(id, "SELECT * from LeagueAccount WHERE gameRole=(?)", selfID)
 
 
     
