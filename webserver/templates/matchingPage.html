@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-    <article class="media content-section">
+    <article class="content-section">
         <div class="media-body">
             {% if current_user.is_authenticated %}
-                <h2><a class="article-title" href="#">{{ current_user.leagueid }}</a></h2>
+                Hi {{ current_user.id }}
+                {{ current_user.matchedLeagueid }}
+                <h2><a class="article-title" href="#">{{ current_user.userName }}</a></h2>
                 <p class="article-content">matched leagueID: {{ current_user.matchedLeagueid }}</p>
                 <p class="article-content">matched Game Level: {{ current_user.gameLevel }}</p>
+                <p class="article-content">email: {{ current_user.email }}</p>
             {% else %}
-                <h2><a class="article-title" href="#">Not logged in</a></h2>
+                <h2><a class="article-title" href="#">Failed to Match</a></h2>
             {% endif %}
         </div>
     </article>
