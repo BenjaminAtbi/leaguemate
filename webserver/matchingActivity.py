@@ -17,7 +17,7 @@ class User(UserMixin):
     champion = None
     gameRole = None
     TFTrank = None
-    leagueid = None
+    matchedLeagueid = None
 
 def getPositionT(arg, query):
     conn = sqlite3.connect('leaguemate.db')
@@ -28,13 +28,13 @@ def getPositionT(arg, query):
     c.execute(query, (arg,))
     positiondata = c.fetchall()
     if(positiondata):
-        user2 = User()
-        user2.leagueid = positiondata[0]['leagueID']
-        user2.gameLevel = positiondata[0]['gameLevel']
-        user2.champion = positiondata[0]['champion']
-        user2.gameRole = positiondata[0]['gameRole']
-        user2.TFTrank = positiondata[0]['TFTrank']
-        return user2
+        user = User()
+        user.matchedLeagueid = positiondata[0]['leagueID']
+        user.gameLevel = positiondata[0]['gameLevel']
+        user.champion = positiondata[0]['champion']
+        user.gameRole = positiondata[0]['gameRole']
+        user.TFTrank = positiondata[0]['TFTrank']
+        return user
     else:
         return None
 
