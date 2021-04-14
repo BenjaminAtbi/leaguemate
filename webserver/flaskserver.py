@@ -53,22 +53,16 @@ def login():
 @app.route('/match', methods=['GET', 'POST'])
 def match():
     form = MatchForm()
-
     if form.validate_on_submit():
         
-        user = getPositionbyInp(form.preferredPosition.data)
+        user = getPositionbyInp(form.preferredPosition.data, current_user.id)
 
         if not user:
-            flash(f'User not logged in')
+            flash(f'failed')
         else:    
-        
-        #    conn = sqlite3.connect('leaguemate.db')
-        #    conn.row_factory=dict_factory
-        #    c=conn.cursor()
-        #    #c.execute(preferredPos)
-        #    #posts=c.fetchall()    
-        #    posts = preferredPos      
-        #    return render_template('matchingPage.html', posts=posts)
+            login_user(user)
+            flash(f'succesffuly matched')
+            flash(current_user.matchedLeagueid)
             return redirect(url_for('matchingPage'))
     return render_template('match.html', title='Match', form=form)
 
