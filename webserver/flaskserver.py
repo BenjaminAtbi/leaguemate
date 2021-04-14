@@ -20,11 +20,6 @@ def load_user(id):
     user = getUserbyID(id)
     return user
 
-def load_pPos(id):
-    preferredPos = getPositionbyInp(id)
-    return preferredPos
-
-
 #Turn the results from the database into a dictionary
 def dict_factory(cursor, row):
     d = {}
@@ -61,18 +56,20 @@ def match():
 
     if form.validate_on_submit():
         
-        preferredPos = getPositionbyInp(form.preferredPosition.data)
+        user = getPositionbyInp(form.preferredPosition.data)
 
-        if(preferredPos):    
-            conn = sqlite3.connect('leaguemate.db')
-            conn.row_factory=dict_factory
-            c=conn.cursor()
-            #c.execute(preferredPos)
-            #posts=c.fetchall()    
-            posts = preferredPos   
-            
-            return render_template('matchingPage.html', posts=posts)
-
+        if not user:
+            flash(f'User not logged in')
+        else:    
+        
+        #    conn = sqlite3.connect('leaguemate.db')
+        #    conn.row_factory=dict_factory
+        #    c=conn.cursor()
+        #    #c.execute(preferredPos)
+        #    #posts=c.fetchall()    
+        #    posts = preferredPos      
+        #    return render_template('matchingPage.html', posts=posts)
+            return redirect(url_for('matchingPage'))
     return render_template('match.html', title='Match', form=form)
 
 
