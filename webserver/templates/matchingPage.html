@@ -1,14 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h2>Matched User: </h2>
-
     <article class="content-section">
         <div class="media-body">
 
         {% for row in result %}
-            <h4>{{row.userName}}</h4>
-            <p>League ID: {{row.leagueID}}</p>
-            <p>Game Role: {{row.gameRole}}</p>
+            <h4>Matched User: {{row.Username}}</h4>
+            <p>League ID: {{row.LeagueID}}</p>
+            <p>Queue Type: {{row.QueueType}}</p>
+            <p>Game Role: {{row.GoodAtRole}}</p>
+            <p>Champion: {{row.GoodAtChamp}}</p>
             
 
         {% endfor %}
