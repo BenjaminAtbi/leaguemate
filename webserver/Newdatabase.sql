@@ -62,7 +62,7 @@ create table if not exists UserPreferMatch(
     PreferredRankTop int not null,
     PreferredType varchar(10),
     primary key (Username),
-    constraint PerferUN foreign key (Username) references UserAccount(Username)
+    constraint PreferUN foreign key (Username) references UserAccount(Username)
 		on update cascade
         on delete cascade,
 	constraint Rankrangebottom foreign key (PreferredRankBottom) references RankName(RankLevel)
