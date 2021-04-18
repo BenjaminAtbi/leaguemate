@@ -6,7 +6,7 @@ from flask_login import LoginManager, login_user, current_user
 from forms import LoginForm, RegistrationForm, BlogForm, MatchForm
 from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
-from matchingActivity import getPositionbyInp
+from matchingActivity import getMatch
 
 conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
@@ -56,9 +56,9 @@ def login():
 def match():
     form = MatchForm()
     if form.validate_on_submit():
-        
+
         # this is the query called NANI 
-        result = getPositionbyInp(form.preferredPosition.data, form.champions.data)
+        result = getMatch(form.preferredPosition.data, form.rankRangeBot.data, form.rankRangeTop, form.queType.data)
         #result = getMatchedUserInfo(form.)
         print("test")
         print(result)
@@ -68,16 +68,13 @@ def match():
             flash(f'succesffuly matched')
             print("match type result:")
             print(type(result))
-            #flash(current_user.matchedLeagueid) waht the fk
             return redirect(url_for('matchingPage', result = result))
     return render_template('match.html', title='Match', form=form)
 
 
 @app.route("/matchingPage")
 def matchingPage():
-    print("hahahahaha")
     var = request.args.getlist('result')
-    
     print(type(var))
     print(var)
     print(type(var[0]))
