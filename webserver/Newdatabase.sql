@@ -57,18 +57,18 @@ create table if not exists LeagueAccount(
 
 create table if not exists UserPreferMatch(
 	Username varchar(50) not null,
-    PerferredPosition char(10) not null,
-    PerferredRankBottom int not null,
-    PerferredRankTop int not null,
-    PerferredType varchar(10),
+    PreferredPosition char(10) not null,
+    PreferredRankBottom int not null,
+    PreferredRankTop int not null,
+    PreferredType varchar(10),
     primary key (Username),
     constraint PerferUN foreign key (Username) references UserAccount(Username)
 		on update cascade
         on delete cascade,
-	constraint Rankrangebottom foreign key (PerferredRankBottom) references RankName(RankLevel)
+	constraint Rankrangebottom foreign key (PreferredRankBottom) references RankName(RankLevel)
 		on update cascade
         on delete cascade,
-	constraint Rankrangetop foreign key (PerferredRankTop) references RankName(RankLevel)
+	constraint Rankrangetop foreign key (PreferredRankTop) references RankName(RankLevel)
 		on update cascade
         on delete cascade
 	
@@ -168,7 +168,7 @@ insert into LeagueAccount(GameServer,LeagueID,GameLevel,AccountRank,QueueType,TF
 ('NA','TestLID14',180,2,'Solo/Duo',3,'Top'),
 ('NA','TestLID15',190,5,'Solo/Duo',4,'Fill');
 
-insert into UserPreferMatch(Username, PerferredPosition, PerferredRankBottom, PerferredRankTop,  PerferredType) values
+insert into UserPreferMatch(Username, PreferredPosition, PreferredRankBottom, PreferredRankTop,  PreferredType) values
 ('TestUN1','Bottom',0,4,'Flax'),
 ('TestUN2','Middle',0,3,'AnyType'),
 ('TestUN3','Top',1,4,'ARAM'),
