@@ -8,11 +8,15 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class MatchForm(FlaskForm):
-    preferredPosition = SelectField('Preferred Position', choices=['Controller', 'Fighter', 'Mage', 'Marksman', 'Slayer', 'Specialist', 'Tank'])
+    preferredPosition = SelectField('Preferred Position', choices=['Top', 'Jungle', 'Middle', 'Bottom', 'Support'])
 
-    rankRange = SelectField('Rank Range', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
+    rankRangeBot = SelectField('Min', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
 
-    champions = StringField('Preferred Champion', validators=[DataRequired()])
+    rankRangeTop = SelectField('Max', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
+
+    #champions = StringField('Preferred Champion', validators=[DataRequired()])
+
+    queType = SelectField('Preferred Queue Type', choices=['AnyType', 'Solo/Duo', 'Flex', 'TFT', 'ARAM'])
 
     save = SubmitField('Save')
 
