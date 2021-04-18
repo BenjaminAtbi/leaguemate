@@ -1,7 +1,6 @@
 import sqlite3
 from flask_login import UserMixin
 
-
 #Turn the results from the database into a dictionary
 def dict_factory(cursor, row):
     d = {}
@@ -10,38 +9,33 @@ def dict_factory(cursor, row):
     return d
 
 #inherit basic flask_login user properties
-class User(UserMixin):
-    id = None
-    matched_matchedLeagueid = None
-    matched_gameLevel = None
-    matched_champion = None
-    matched_gameRole = None
-    matched_TFTrank = None
-    
+def getPositionT(arg1, arg2, query):
+    try:
+        conn = sqlite3.connect('leaguemate.db')
+        conn.row_factory = dict_factory
+        c = conn.cursor()
+        c.execute(query, (arg1,arg2),)
+        result = c.fetchall()
+        for row in result:
+           print(row)
+        return result
+    except sqlite3.Error as error:
+        print("failed to read from table", error)
+    finally:
+        if conn:
+            conn.close()
+            print("the sqlite connection is closed")
 
-def getPositionT(arg, query, selfID):
-    conn = sqlite3.connect('leaguemate.db')
-    conn.row_factory = dict_factory
-    c = conn.cursor()
-    c.execute(query, (arg,))
-    userdata = c.fetchall()
-    if(userdata):
-        user = User()
-        user.id = selfID
-        user.matchedLeagueid = userdata[0]['leagueID']
-        user.matched_gameLevel = userdata[0]['gameLevel']
-        user.matched_champion = userdata[0]['champion']
-        user.matched_gameRole = userdata[0]['gameRole']
-        user.matched_TFTrank = userdata[0]['TFTrank']
-        print(user.matched_champion)
-        print(user.matched_matchedLeagueid)
-        print(user.matched_gameLevel)
-        return user
-    else:
-        return None
+def getPositionbyInp(arg1, arg2):
+    que = "SELECT U.userName, U.leagueID, L.gameRole FROM UserAccount U, LeagueAccount L, LeagueAccountRank R WHERE U.leagueID = L.leagueID AND R.leagueID = L.leagueID AND L.gameRole=(?) AND L.champion=(?)"
+#    que = "SELECT * from LeagueAccount WHERE gameRole=(?)"
 
-def getPositionbyInp(id, selfID):
-    return getPositionT(id, "SELECT * from LeagueAccount WHERE gameRole=(?)", selfID)
+    return getPositionT(arg1, arg2, que)
+
+def getMatchedUserInfo(arg1, arg2):
+    que = "SELECT U.userName, L.gameRole, R.accountRange, L.champion FROM LeagueAccount L, LeagueAccountRank, UserAccountU, PreferMatch P GROUP BY P.userID=(?) AND U.userID=P.userID"
+    return getPositionT(arg1, arg2, que)
+
 
 
     
