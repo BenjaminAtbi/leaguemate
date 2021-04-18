@@ -55,7 +55,7 @@ create table if not exists LeagueAccount(
         on delete cascade
 );
 
-create table if not exists UserPerferMatch(
+create table if not exists UserPreferMatch(
 	Username varchar(50) not null,
     PerferredPosition char(10) not null,
     PerferredRankBottom int not null,
@@ -168,7 +168,7 @@ insert into LeagueAccount(GameServer,LeagueID,GameLevel,AccountRank,QueueType,TF
 ('NA','TestLID14',180,2,'Solo/Duo',3,'Top'),
 ('NA','TestLID15',190,5,'Solo/Duo',4,'Fill');
 
-insert into UserPerferMatch(Username, PerferredPosition, PerferredRankBottom, PerferredRankTop,  PerferredType) values
+insert into UserPreferMatch(Username, PerferredPosition, PerferredRankBottom, PerferredRankTop,  PerferredType) values
 ('TestUN1','Bottom',0,4,'Flax'),
 ('TestUN2','Middle',0,3,'AnyType'),
 ('TestUN3','Top',1,4,'ARAM'),
