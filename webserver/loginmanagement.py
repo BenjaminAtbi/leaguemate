@@ -11,12 +11,8 @@ def dict_factory(cursor, row):
 #inherit basic flask_login user properties
 class User(UserMixin):
     id = None
-    email = None
-    userName = None
-    DateOfBirth = None
-    gameServer = None
     password = None
-    leagueID = None
+    name = None 
 
 def getUser(arg, query):
     conn = sqlite3.connect('leaguemate.db')
@@ -26,19 +22,23 @@ def getUser(arg, query):
     userdata = c.fetchall()
     if(userdata):
         user = User()
-        user.id = userdata[0]['userID']
-        user.email = userdata[0]['email']
-        user.userName = userdata[0]['userName']
-        user.DateOfBirth = userdata[0]['dateOfBirth']
-        user.gameServer = userdata[0]['gameServer']
-        user.userPassword = userdata[0]['userPassword']
-        user.leagueID = userdata[0]['leagueID']
+        user.id = userdata[0]['AccountName']
+        user.password = userdata[0]['AccountPassword']
+        user.name = userdata[0]['Username']
         return user
     else:
         return None
 
+def getUserData(arg, fields):
+    conn = sqlite3.connect('leaguemate.db')
+    conn.row_factory = dict_factory
+    c = conn.cursor()
+    c.execute(query, (arg,))
+    userdata = c.fetchall()
+
+
 def getUserbyID(id):
-    return getUser(id, "SELECT * from UserAccount where userID=(?)")
+    return getUser(id, "SELECT * from UserAccount where AccountName=(?)")
 
 def getUserbyName(username):
-    return getUser(username, "SELECT * from UserAccount where userName=(?)")
+    return getUser(username, "SELECT * from UserAccount where Username=(?)")

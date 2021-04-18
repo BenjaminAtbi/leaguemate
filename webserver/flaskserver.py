@@ -31,18 +31,19 @@ def dict_factory(cursor, row):
 @app.route("/")
 @app.route("/profile")
 def profile():
+    
+    
     return render_template('profile.html')
 
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():   
     form = LoginForm()
-
     if form.validate_on_submit():
         user = getUserbyName(form.username.data)
         if not user:
             flash(f'Incorrect Username')
-        elif form.password.data != user.userPassword:
+        elif form.password.data != user.password:
             flash(f'Incorrect Password')
         else:
             print("login: ", login_user(user))
