@@ -12,12 +12,15 @@
                         {{ form.preferredPosition }}
                     </div>
                     <div class="form-group">
-                        {{ form.rankRange.label(class="form-control-label") }}
-                        {{ form.rankRange }}
+                        <p>Rank Range: 
+                        {{ form.rankRangeBot.label(class="form-control-label") }}
+                        {{ form.rankRangeBot }}
+                        {{ form.rankRangeTop.label(class="form-control-label") }}
+                        {{ form.rankRangeTop }}</p>
                     </div>
                     <div class="form-group">
-                        {{ form.champions.label(class="form-control-label") }}
-                        {{ form.champions }}
+                        {{ form.queType.label(class="form-control-label") }}
+                        {{ form.queType }}
                     </div>
                 </div>
             </fieldset>
