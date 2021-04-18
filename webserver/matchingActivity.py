@@ -9,15 +9,19 @@ def dict_factory(cursor, row):
     return d
 
 #inherit basic flask_login user properties
-def getPositionT(arg1, arg2, query):
+def getPositionT(arg1, arg2, arg3, arg4, query):
     try:
         conn = sqlite3.connect('leaguemate.db')
         conn.row_factory = dict_factory
         c = conn.cursor()
-        c.execute(query, (arg1,arg2),)
+        if arg4 == 'AnyType':
+            query = "SELECT U.Username, L.QueueType, L.LeagueID, U.GoodAtPosition, U.GoodAtRole, U.GoodAtChamp FROM UserGoodAt U, LeagueAccount L, UserLeague A WHERE U.Username = A.Username AND A.LeagueID = L.LeagueID AND U.GoodAtPosition=(?) AND L.AccountRank BETWEEN (?) AND (?)" 
+            c.execute(query, (arg1,arg2,arg3),)
+        else:
+            c.execute(query, (arg1,arg2,arg3,arg4),)
         result = c.fetchall()
         for row in result:
-           print(row)
+            print(row)
         return result
     except sqlite3.Error as error:
         print("failed to read from table", error)
@@ -26,17 +30,31 @@ def getPositionT(arg1, arg2, query):
             conn.close()
             print("the sqlite connection is closed")
 
-def getPositionbyInp(arg1, arg2):
-    que = "SELECT U.userName, U.leagueID, L.gameRole FROM UserAccount U, LeagueAccount L, LeagueAccountRank R WHERE U.leagueID = L.leagueID AND R.leagueID = L.leagueID AND L.gameRole=(?) AND L.champion=(?)"
-#    que = "SELECT * from LeagueAccount WHERE gameRole=(?)"
+def getMatch(arg1, arg2, arg3, arg4):
+    arg2 = switch(arg2)
+    arg3 = switch(arg3)
+    que = "SELECT U.Username, L.QueueType, L.LeagueID, U.GoodAtPosition, U.GoodAtRole, U.GoodAtChamp FROM UserGoodAt U, LeagueAccount L, UserLeague A WHERE U.Username = A.Username AND A.LeagueID = L.LeagueID AND U.GoodAtPosition=(?) AND L.AccountRank BETWEEN (?) AND (?) AND  L.QueueType =(?) " 
+    return getPositionT(arg1, arg2, arg3, arg4, que)
 
-    return getPositionT(arg1, arg2, que)
-
-def getMatchedUserInfo(arg1, arg2):
+def updatePreferMatch(arg1, arg2, arg3, arg4):
     que = "SELECT U.userName, L.gameRole, R.accountRange, L.champion FROM LeagueAccount L, LeagueAccountRank, UserAccountU, PreferMatch P GROUP BY P.userID=(?) AND U.userID=P.userID"
-    return getPositionT(arg1, arg2, que)
+    return getPositionT(arg1, arg2, arg3, arg4, que)
 
-
-
+def switch(argument):
+    switcher = {
+        'N/A': 0,
+        'Iron': 1,
+        'Bronze': 2,
+        'Silver': 3,
+        'Gold': 4,
+        'Platinum': 5,
+        'Diamond': 6,
+        'Master': 7,
+        'Grandmaster': 8,
+        'Challenger': 9
+    }
+    print('switcher:')
+    print(switcher.get(argument), 'nothing')
+    return switcher.get(argument, "nothing")
     
 
