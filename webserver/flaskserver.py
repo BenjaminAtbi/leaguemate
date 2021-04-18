@@ -1,6 +1,6 @@
 ### Example inspired by Tutorial at https://www.youtube.com/watch?v=MwZwr5Tvyxo&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH
 ### However the actual example uses sqlalchemy which uses Object Relational Mapper, which are not covered in this course. I have instead used natural sQL queries for this demo. 
-
+import json
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user
 from forms import LoginForm, RegistrationForm, BlogForm, MatchForm
@@ -40,11 +40,13 @@ def login():
 
     if form.validate_on_submit():
         user = getUserbyName(form.username.data)
+        print(user)
         if not user:
             flash(f'Incorrect Username')
         elif form.password.data != user.userPassword:
             flash(f'Incorrect Password')
         else:
+            print(user.__dict__) 
             print("login: ", login_user(user))
             flash(f'Logged in Successfully')
             return redirect(url_for('profile'))
@@ -55,21 +57,35 @@ def match():
     form = MatchForm()
     if form.validate_on_submit():
         
-        user = getPositionbyInp(form.preferredPosition.data, current_user.id)
-
-        if not user:
+        # this is the query called NANI 
+        result = getPositionbyInp(form.preferredPosition.data, form.champions.data)
+        #result = getMatchedUserInfo(form.)
+        print("test")
+        print(result)
+        if not result:
             flash(f'failed')
         else:    
-            login_user(user)
             flash(f'succesffuly matched')
-            flash(current_user.matchedLeagueid)
-            return redirect(url_for('matchingPage'))
+            print("match type result:")
+            print(type(result))
+            #flash(current_user.matchedLeagueid) waht the fk
+            return redirect(url_for('matchingPage', result = result))
     return render_template('match.html', title='Match', form=form)
 
 
 @app.route("/matchingPage")
-def matchingPage():       
-    return render_template('matchingPage.html')
+def matchingPage():
+    print("hahahahaha")
+    var = request.args.getlist('result')
+    
+    print(type(var))
+    print(var)
+    print(type(var[0]))
+    for i in range(len(var)):
+        var[i] = var[i].replace("\'", '\"')
+        var[i] = json.loads(var[i])
+
+    return render_template('matchingPage.html', result = var)
 
 @app.route("/debug")
 def debug():
