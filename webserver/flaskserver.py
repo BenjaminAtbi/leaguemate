@@ -3,7 +3,7 @@
 import json
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user
-from forms import LoginForm, RegistrationForm, BlogForm, MatchForm
+from forms import LoginForm, RegistrationForm, BlogForm, MatchForm, SearchForm
 from loginmanagement import getUserbyID, getUserbyName
 import sqlite3
 from matchingActivity import getMatch
@@ -72,7 +72,7 @@ def match():
     return render_template('match.html', title='Match', form=form)
 
 
-@app.route("/matchingPage")
+@app.route("/matchingPage", methods=['GET', 'POST'])
 def matchingPage():
     var = request.args.getlist('result')
     print(type(var))
@@ -82,12 +82,25 @@ def matchingPage():
         var[i] = var[i].replace("\'", '\"')
         var[i] = json.loads(var[i])
 
-    return render_template('matchingPage.html', result = var)
+    return render_template('matchingPage.html', result = var, title = "matchingPage")
+
+@app.route("/searchPage", methods=['GET', 'POST'])
+def searchPage():
+    form = SearchForm()
+    if form.validate_on_submit():
+        return redirect(url_for('searchedResult'))
+        
+    return render_template('searchPage.html', title='Search', form=form)
+
+@app.route("/searchedResult",  methods=['GET', 'POST'])
+def searchedResult():
+    return render_template('searchedResult.html', title='Search Result')
 
 @app.route("/debug")
 def debug():
     print("auth: ",current_user, current_user.is_authenticated)
     return render_template('layout.html', title='Login')
+
 # @app.route("/register", methods=['GET', 'POST'])
 # def register():
 #     form = RegistrationForm()

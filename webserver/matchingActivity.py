@@ -15,7 +15,7 @@ def getPositionT(arg1, arg2, arg3, arg4, query):
         conn.row_factory = dict_factory
         c = conn.cursor()
         if arg4 == 'AnyType':
-            query = "SELECT U.Username, L.QueueType, L.LeagueID, U.GoodAtPosition, U.GoodAtRole, U.GoodAtChamp FROM UserGoodAt U, LeagueAccount L, UserLeague A WHERE U.Username = A.Username AND A.LeagueID = L.LeagueID AND U.GoodAtPosition=(?) AND L.AccountRank BETWEEN (?) AND (?)" 
+            query = "SELECT U.Username, L.QueueType, L.LeagueID, U.GoodAtPosition, U.GoodAtRole, U.GoodAtChamp, L.AccountRank FROM UserGoodAt U, LeagueAccount L, UserLeague A WHERE U.Username = A.Username AND A.LeagueID = L.LeagueID AND U.GoodAtPosition=(?) AND L.AccountRank BETWEEN (?) AND (?) ORDER BY L.AccountRank DESC" 
             c.execute(query, (arg1,arg2,arg3),)
         else:
             c.execute(query, (arg1,arg2,arg3,arg4),)
@@ -33,7 +33,7 @@ def getPositionT(arg1, arg2, arg3, arg4, query):
 def getMatch(arg1, arg2, arg3, arg4):
     arg2 = switch(arg2)
     arg3 = switch(arg3)
-    que = "SELECT U.Username, L.QueueType, L.LeagueID, U.GoodAtPosition, U.GoodAtRole, U.GoodAtChamp FROM UserGoodAt U, LeagueAccount L, UserLeague A WHERE U.Username = A.Username AND A.LeagueID = L.LeagueID AND U.GoodAtPosition=(?) AND L.AccountRank BETWEEN (?) AND (?) AND  L.QueueType =(?) " 
+    que = "SELECT U.Username, L.QueueType, L.LeagueID, U.GoodAtPosition, U.GoodAtRole, U.GoodAtChamp, L.AccountRank FROM UserGoodAt U, LeagueAccount L, UserLeague A WHERE U.Username = A.Username AND A.LeagueID = L.LeagueID AND U.GoodAtPosition=(?) AND L.AccountRank BETWEEN (?) AND (?) AND  L.QueueType =(?) ORDER BY L.AccountRank DESC " 
     return getPositionT(arg1, arg2, arg3, arg4, que)
 
 def updatePreferMatch(arg1, arg2, arg3, arg4):

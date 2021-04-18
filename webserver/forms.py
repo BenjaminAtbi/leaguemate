@@ -20,6 +20,12 @@ class MatchForm(FlaskForm):
 
     save = SubmitField('Save')
 
+class SearchForm(FlaskForm):
+    byPosition = SelectField('Preferred Position', choices=['Top', 'Jungle', 'Middle', 'Bottom', 'Support'])
+    byRank = SelectField('Rank Range', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
+    byQueType = SelectField('Preferred Queue Type', choices=['AnyType', 'Solo/Duo', 'Flex', 'TFT', 'ARAM'])
+
+    search = SubmitField('Search')
 
 ###############
 class RegistrationForm(FlaskForm):
