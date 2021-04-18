@@ -3,8 +3,8 @@
 
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import LoginForm, RegistrationForm, BlogForm
-from loginmanagement import getUserbyID, getUserbyName
+from forms import LoginForm, ProfileForm
+from loginmanagement import getUserbyID, getUserbyName, getUserData
 import sqlite3
 
 conn = sqlite3.connect('leaguemate.db')
@@ -31,9 +31,15 @@ def dict_factory(cursor, row):
 @app.route("/")
 @app.route("/profile")
 def profile():
-    
-    
-    return render_template('profile.html')
+    data = getUserData(["UserInfor", "UserLeague"])
+    print(data)
+    form = ProfileForm()
+    form.accountname = data['UserInfor'][0]['Username']
+    form.email = data['UserInfor'][0]['Email']
+    form.country = data['UserInfor'][0]['Country']
+    form.leagueID = data['UserLeague'][0]['LeagueID']
+
+    return render_template('profile.html', form=form)
 
 
 @app.route("/login", methods=['GET', 'POST'])
