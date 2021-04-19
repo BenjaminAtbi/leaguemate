@@ -5,6 +5,8 @@ from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import LoginForm, MatchForm, SearchForm, ProfileForm, SearchSortForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData
+from forms import LoginForm, ProfileForm, RegisterForm, MatchForm, SearchForm
+from loginmanagement import getUserbyID, getUserbyName, getUserData, registerUser
 import sqlite3
 from matchingActivity import getMatch
 from searchManagement import getAllUsers, getMaxLevel, sortUsers
@@ -37,18 +39,39 @@ def profile():
     if(current_user.is_authenticated):
         data = getUserData(["UserInfor", "UserLeague"])
         print(data)
-        form.accountname = data['UserInfor'][0]['Username']
+        form.username = data['UserInfor'][0]['Username']
         form.email = data['UserInfor'][0]['Email']
         form.country = data['UserInfor'][0]['Country']
         form.leagueID = data['UserLeague'][0]['LeagueID']
     return render_template('profile.html', form=form)
 
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+
+        print(form.accountname.data)
+        print(form.password.data)
+        print(form.username.data)
+        print(form.username.data)
+        print(form.email.data)
+        print(form.dateofbirth.data)
+        print(form.country.data)
+
+
+
+        registerUser(form)
+        flash(f"User Registered")
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():   
     form = LoginForm()
     if form.validate_on_submit():
-        user = getUserbyName(form.username.data)
+        user = getUserbyID(form.accountname.data)
         if not user:
             flash(f'Incorrect Username')
         elif form.password.data != user.password:

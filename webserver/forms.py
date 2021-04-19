@@ -1,14 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField, SelectField, RadioField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField, SelectField, RadioField, DateField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    accountname = StringField('Account Name', validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 class ProfileForm(FlaskForm):
     accountname = StringField('Accountname', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     country = StringField('Country', validators=[DataRequired()])
     leagueID = StringField('LeagueID', validators=[DataRequired()])
@@ -36,6 +37,15 @@ class SearchSortForm(FlaskForm):
     sort = SubmitField('Find the Max Level User')
     returnPrev = SubmitField('Return')
 
+class RegisterForm(FlaskForm):
+    accountname = StringField('Accountname', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
+    email = StringField('Email', validators=[DataRequired()])
+    dateofbirth = DateField('Dateofbirth', validators=[DataRequired()])
+    country = StringField('Country', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
 ###############
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
