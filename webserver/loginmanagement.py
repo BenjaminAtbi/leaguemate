@@ -1,4 +1,5 @@
 from flask_login import UserMixin, current_user
+from forms import RegisterForm
 import sqlite3
 
 #Turn the results from the database into a dictionary
@@ -41,6 +42,17 @@ def getUserData(tables):
         userdata[tablename] = c.fetchall()
     return userdata
 
+def registerUser(form):
+    conn = sqlite3.connect('leaguemate.db')
+    conn.row_factory = dict_factory
+    c = conn.cursor()
+    query = "INSERT INTO UserAccount(AccountName, AccountPassword, Username) values (\'"+\
+    form.accountname.data+"\',\'"+form.password.data+"\',\'"+form.username.data+"\');"
+    c.execute(query)
+    query = "INSERT INTO UserInfor(Username,Email,DateofBirth,Country) values (\'"+\
+    form.username.data+"\',\'"+form.email.data+"\',\'"+str(form.dateofbirth.data)+"\',\'"+form.country.data+"\');"
+    c.execute(query)
+    conn.commit()
 
 def getUserbyID(id):
     return getUser(id, "SELECT * from UserAccount where AccountName=(?)")

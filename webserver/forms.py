@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField, SelectField, RadioField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField, SelectField, RadioField, DateField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
@@ -33,6 +33,15 @@ class SearchForm(FlaskForm):
 
     search = SubmitField('Search')
 
+class RegisterForm(FlaskForm):
+    accountname = StringField('Accountname', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
+    email = StringField('Email', validators=[DataRequired()])
+    dateofbirth = DateField('Dateofbirth', validators=[DataRequired()])
+    country = StringField('Country', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
 ###############
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
