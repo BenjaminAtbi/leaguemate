@@ -27,11 +27,14 @@ class MatchForm(FlaskForm):
     save = SubmitField('Save')
 
 class SearchForm(FlaskForm):
-    byPosition = SelectField('Preferred Position', choices=['Top', 'Jungle', 'Middle', 'Bottom', 'Support'])
-    byRank = SelectField('Rank Range', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
-    byQueType = SelectField('Preferred Queue Type', choices=['AnyType', 'Solo/Duo', 'Flex', 'TFT', 'ARAM'])
-
+    byPosition = SelectField('Preferred Position', choices=['Any', 'Top', 'Jungle', 'Middle', 'Bottom', 'Support'])
+    byRank = SelectField('Rank Range', choices=['Any', 'N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
+    byQueType = SelectField('Preferred Queue Type', choices=['Any', 'Solo/Duo', 'Flex', 'TFT', 'ARAM'])
     search = SubmitField('Search')
+
+class SearchSortForm(FlaskForm):
+    sort = SubmitField('Find the Max Level User')
+    returnPrev = SubmitField('Return')
 
 ###############
 class RegistrationForm(FlaskForm):

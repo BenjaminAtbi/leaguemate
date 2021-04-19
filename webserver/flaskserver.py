@@ -3,11 +3,11 @@
 import json
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import LoginForm, MatchForm, SearchForm, ProfileForm
+from forms import LoginForm, MatchForm, SearchForm, ProfileForm, SearchSortForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData
 import sqlite3
 from matchingActivity import getMatch
-from searchManagement import getAllUsers
+from searchManagement import getAllUsers, getMaxLevel, sortUsers
 
 conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
@@ -104,28 +104,43 @@ def matchingPage():
 def searchPage():
     form = SearchForm()
     if form.validate_on_submit():
-        resultdata = getAllUsers()
-        print("testerAgain")
-        print(type(resultdata))
-        #print(resultdata)
+        a1 =form.byPosition.data
+        a2 = form.byRank.data
+        a3 = form.byQueType.data
+        resultdata = sortUsers(a1, a2, a3)
         if not resultdata:
             flash(f'Failed to query data')
         else:    
             flash(f'Succesffuly Queried')
             print(type(resultdata))
-            return redirect(url_for('searchedResult', resultdata = resultdata))
+            return redirect(url_for('searchedResult', resultdata = resultdata, a1 = a1, a2 = a2, a3 = a3))
     return render_template('searchPage.html', title='Search', form=form)
 
 @app.route("/searchedResult",  methods=['GET', 'POST'])
 def searchedResult():
+    form = SearchSortForm()
     var = request.args.getlist('resultdata')
+    a1 = request.args.get('a1')
+    a2 = request.args.get('a2')
+    a3 = request.args.get('a3')
     print(type(var))
     print(var)
     print(type(var[0]))
     for i in range(len(var)):
         var[i] = var[i].replace("\'", '\"')
         var[i] = json.loads(var[i])
-    return render_template('searchedResult.html', resultdata = var, title='Search Result')
+    if form.validate_on_submit():
+        resultdata = getMaxLevel(a1, a2, a3)
+        return(redirect(url_for('findMaxLev', resultdata=resultdata)))
+    return render_template('searchedResult.html', resultdata = var, title='Search Result', form=form)
+
+@app.route("/findMaxLev",  methods=['GET', 'POST'])
+def findMaxLev():
+    var = request.args.getlist('resultdata')
+    for i in range(len(var)):
+        var[i] = var[i].replace("\'", '\"')
+        var[i] = json.loads(var[i])
+    return render_template('findMaxLev.html', resultdata = var, title='Sorted Result')
 
 @app.route("/debug")
 def debug():

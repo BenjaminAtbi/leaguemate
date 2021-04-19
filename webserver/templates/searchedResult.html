@@ -1,34 +1,43 @@
 {% extends "layout.html" %}
 {% block content %}
-    <article class="content-section">
-        <div class="row">
-            <table class = "col-md-12">
-                <thead>
-                <tr>
-                    <th>User Name</th>
-                    <th>League ID</th>
-                    <th>Account Rank</th>
-                    <th>TFT Rank</th>
-                    <th>Queue Type</th>
-                    <th>Gamer Server</th>
-                    <th>League Postion</th>
-                </tr>
-                </thead>    
-                <tbody>
-                {% for row in resultdata %}
-                <tr>
-                    <td>{{row.Username}}</td>
-                    <td>{{row.LeagueID}}</td>
-                    <td>{{row.AccountRank}}</td>
-                    <td>{{row.TFTRank}}</td>
-                    <td>{{row.QueueType}}</td>
-                    <td>{{row.Position}}</td>
-                    <td>{{row.GameServer}}</td>
-                    
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>       
-        </div>
-    </article>
+    <div class=container>
+        <form method="POST" action="">
+            {{form.hidden_tag()}}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{form.sort(class="btn btn-outline-info")}}
+                </div>
+            </fieldset>
+            <div class="row">
+                <table class = "col-md-12">
+                        <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>League ID</th>
+                            <th>Account Rank</th>
+                            <th>TFT Rank</th>
+                            <th>Queue Type</th>
+                            <th>Gamer Server</th>
+                            <th>League Postion</th>
+                        </tr>
+                        </thead>    
+                        <tbody>
+                        {% for row in resultdata %}
+                        <tr>
+                            <td>{{row.Username}}</td>
+                            <td>{{row.LeagueID}}</td>
+                            <td>{{row.AccountRank}}</td>
+                            <td>{{row.TFTRank}}</td>
+                            <td>{{row.QueueType}}</td>
+                            <td>{{row.GameServer}}</td>
+                            <td>{{row.Position}}</td>                        
+                        </tr>
+                        </tbody>
+                        {% endfor %}
+                  
+                </table>       
+            </div>
+        </form>
+   
+    </div>
 {% endblock content %}
