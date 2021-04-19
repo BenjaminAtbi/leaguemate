@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article class="media content-section">
+        <div class="row">
+            <table class = "col-md-12">
+                <thead>
+                <tr>
+                    <th>Champion</th>
+                    <th>Number of Players</th>
+                   
+                </tr>
+                </thead>    
+                <tbody>
+                {% for row in champs %}
+                    <tr>
+                        <td>{{row.GoodAtChamp}}</td>
+                        <td>{{row.num}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>         
+        </div>
+    </article>
+{% endblock content %}

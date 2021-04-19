@@ -55,20 +55,20 @@ create table if not exists LeagueAccount(
         on delete cascade
 );
 
-create table if not exists UserPreferMatch(
+create table if not exists UserpreferMatch(
 	Username varchar(50) not null,
-    PreferredPosition char(10) not null,
-    PreferredRankBottom int not null,
-    PreferredRankTop int not null,
-    PreferredType varchar(10),
+    preferredPosition char(10) not null,
+    preferredRankBottom int not null,
+    preferredRankTop int not null,
+    preferredType varchar(10),
     primary key (Username),
-    constraint PreferUN foreign key (Username) references UserAccount(Username)
+    constraint preferUN foreign key (Username) references UserAccount(Username)
 		on update cascade
         on delete cascade,
-	constraint Rankrangebottom foreign key (PreferredRankBottom) references RankName(RankLevel)
+	constraint Rankrangebottom foreign key (preferredRankBottom) references RankName(RankLevel)
 		on update cascade
         on delete cascade,
-	constraint Rankrangetop foreign key (PreferredRankTop) references RankName(RankLevel)
+	constraint Rankrangetop foreign key (preferredRankTop) references RankName(RankLevel)
 		on update cascade
         on delete cascade
 	
@@ -85,6 +85,19 @@ create table if not exists UserGoodAt(
         on delete cascade
 );
 
+Drop trigger if exists MatchLimit;
+
+create trigger MatchLimit
+before insert on UserPreferMatch 
+for each row
+	when (NEW.preferredRankTop - ( select AccountRank from leagueaccount L1
+    where L1.LeagueID = (select LeagueID from userleague UL where UL.Username = NEW.Username)) > 2)
+    begin
+        insert into UserpreferMatch(Username, preferredPosition, preferredRankBottom, preferredRankTop,  preferredType) values
+        (NEW.Username, NEW.preferredPosition, NEW.preferredRankBottom, NEW.preferredRankTop,  NEW.preferredType);
+    end;
+
+    
 
 
 /* Populate tables*/
@@ -168,8 +181,8 @@ insert into LeagueAccount(GameServer,LeagueID,GameLevel,AccountRank,QueueType,TF
 ('NA','TestLID14',180,2,'Solo/Duo',3,'Top'),
 ('NA','TestLID15',190,5,'Solo/Duo',4,'Fill');
 
-insert into UserPreferMatch(Username, PreferredPosition, PreferredRankBottom, PreferredRankTop,  PreferredType) values
-('TestUN1','Bottom',0,4,'Flex'),
+insert into UserpreferMatch(Username, preferredPosition, preferredRankBottom, preferredRankTop,  preferredType) values
+('TestUN1','Bottom',0,2,'Flex'),
 ('TestUN2','Middle',0,3,'AnyType'),
 ('TestUN3','Top',1,4,'ARAM'),
 ('TestUN4','Jungle',2,3,'TFT'),
@@ -178,12 +191,13 @@ insert into UserPreferMatch(Username, PreferredPosition, PreferredRankBottom, Pr
 ('TestUN7','Fill',3,6,'AnyType'),
 ('TestUN8','Top',2,8,'ARAM'),
 ('TestUN9','Jungle',4,5,'TFT'),
-('TestUN10','Support',1,7,'Solo/Dou'),
-('TestUN11','Bottom',4,8,'Flex'),
-('TestUN12','Fill',1,7,'AnyType'),
-('TestUN13','Top',1,6,'ARAM'),
+('TestUN10','Support',1,6,'Solo/Dou'),
+('TestUN11','Bottom',4,5,'Flex'),
+('TestUN12','Fill',1,4,'AnyType'),
+('TestUN13','Top',1,4,'ARAM'),
 ('TestUN14','Jungle',3,4,'TFT'),
 ('TestUN15','Support',2,7,'Solo/Dou');
+
 
 insert into UserGoodAt(Username,GoodAtPosition,GoodAtRole,GoodAtChamp) values
 ('TestUN1','Top','Tank','Ornn'),

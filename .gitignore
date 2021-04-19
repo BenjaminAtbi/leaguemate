@@ -2,3 +2,5 @@
 *.pyc
 Sample Project/*
 *.db
+*.bak
+webserver/leaguemate.db

@@ -30,7 +30,20 @@ def getAllUsers():
     que = "select * from UserLeague as C left outer join LeagueAccount as L on L.LeagueID = C.LeagueID left outer join UserAccount as U on C.Username = U.Username" 
     return getUserDataL(que)
 
-
+def getAllChampions():
+    try:
+        conn = sqlite3.connect('leaguemate.db')
+        conn.row_factory = dict_factory
+        c = conn.cursor()
+        c.execute("SELECT GoodAtChamp, count(*) as num FROM usergoodat GROUP BY GoodAtChamp ORDER BY num DESC")
+        result = c.fetchall()
+        return result
+    except sqlite3.Error as error:
+        print("failed to read from table", error)
+    finally:
+        if conn:
+            conn.close()
+            print("the sqlite connection is closed")
 
 def switch(argument):
     switcher = {

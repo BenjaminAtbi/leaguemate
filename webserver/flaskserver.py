@@ -7,7 +7,7 @@ from forms import LoginForm, ProfileForm, RegisterForm, MatchForm, SearchForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData, registerUser
 import sqlite3
 from matchingActivity import getMatch
-from searchManagement import getAllUsers
+from searchManagement import getAllUsers, getAllChampions
 
 conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
@@ -36,7 +36,6 @@ def profile():
     form = ProfileForm()
     if(current_user.is_authenticated):
         data = getUserData(["UserInfor", "UserLeague"])
-        print(data)
         form.username = data['UserInfor'][0]['Username']
         form.email = data['UserInfor'][0]['Email']
         form.country = data['UserInfor'][0]['Country']
@@ -48,17 +47,6 @@ def profile():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-
-        print(form.accountname.data)
-        print(form.password.data)
-        print(form.username.data)
-        print(form.username.data)
-        print(form.email.data)
-        print(form.dateofbirth.data)
-        print(form.country.data)
-
-
-
         registerUser(form)
         flash(f"User Registered")
         return redirect(url_for('login'))
@@ -148,10 +136,13 @@ def searchedResult():
         var[i] = json.loads(var[i])
     return render_template('searchedResult.html', resultdata = var, title='Search Result')
 
-@app.route("/debug")
-def debug():
-    print("auth: ",current_user, current_user.is_authenticated)
-    return render_template('layout.html', title='Login')
+@app.route("/popularity")
+def popularity():
+    champs = getAllChampions()
+    print(champs)
+    return render_template('popularity.html', champs=champs)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True,port=7000)
