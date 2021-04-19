@@ -1,11 +1,13 @@
 ### Example inspired by Tutorial at https://www.youtube.com/watch?v=MwZwr5Tvyxo&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH
 ### However the actual example uses sqlalchemy which uses Object Relational Mapper, which are not covered in this course. I have instead used natural sQL queries for this demo. 
-
+import json
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import LoginForm, ProfileForm
+from forms import LoginForm, MatchForm, SearchForm, ProfileForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData
 import sqlite3
+from matchingActivity import getMatch
+from searchManagement import getAllUsers
 
 conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
@@ -31,14 +33,14 @@ def dict_factory(cursor, row):
 @app.route("/")
 @app.route("/profile")
 def profile():
-    data = getUserData(["UserInfor", "UserLeague"])
-    print(data)
     form = ProfileForm()
-    form.accountname = data['UserInfor'][0]['Username']
-    form.email = data['UserInfor'][0]['Email']
-    form.country = data['UserInfor'][0]['Country']
-    form.leagueID = data['UserLeague'][0]['LeagueID']
-
+    if(current_user.is_authenticated):
+        data = getUserData(["UserInfor", "UserLeague"])
+        print(data)
+        form.accountname = data['UserInfor'][0]['Username']
+        form.email = data['UserInfor'][0]['Email']
+        form.country = data['UserInfor'][0]['Country']
+        form.leagueID = data['UserLeague'][0]['LeagueID']
     return render_template('profile.html', form=form)
 
 
@@ -57,65 +59,78 @@ def login():
             return redirect(url_for('profile'))
     return render_template('login.html', title='Login', form=form)
 
+
 @app.route("/logout")
 def logout():   
-    logout_user()
-    print("loggin out")
+    if(current_user.is_authenticated):
+        logout_user()
+        print("loggin out")
     return redirect(url_for("profile"))
+    
 
 
+@app.route('/match', methods=['GET', 'POST'])
+def match():
+    form = MatchForm()
+    if form.validate_on_submit():
+
+        # this is the query called NANI 
+        result = getMatch(form.preferredPosition.data, form.rankRangeBot.data, form.rankRangeTop, form.queType.data)
+        #result = getMatchedUserInfo(form.)
+        print("test")
+        print(result)
+        if not result:
+            flash(f'failed')
+        else:    
+            flash(f'succesffuly matched')
+            print("match type result:")
+            print(type(result))
+            return redirect(url_for('matchingPage', result = result))
+    return render_template('match.html', title='Match', form=form)
+
+
+@app.route("/matchingPage", methods=['GET', 'POST'])
+def matchingPage():
+    var = request.args.getlist('result')
+    print(type(var))
+    print(var)
+    print(type(var[0]))
+    for i in range(len(var)):
+        var[i] = var[i].replace("\'", '\"')
+        var[i] = json.loads(var[i])
+    return render_template('matchingPage.html', result = var, title = "matchingPage")
+
+@app.route("/searchPage", methods=['GET', 'POST'])
+def searchPage():
+    form = SearchForm()
+    if form.validate_on_submit():
+        resultdata = getAllUsers()
+        print("testerAgain")
+        print(type(resultdata))
+        #print(resultdata)
+        if not resultdata:
+            flash(f'Failed to query data')
+        else:    
+            flash(f'Succesffuly Queried')
+            print(type(resultdata))
+            return redirect(url_for('searchedResult', resultdata = resultdata))
+    return render_template('searchPage.html', title='Search', form=form)
+
+@app.route("/searchedResult",  methods=['GET', 'POST'])
+def searchedResult():
+    var = request.args.getlist('resultdata')
+    print(type(var))
+    print(var)
+    print(type(var[0]))
+    for i in range(len(var)):
+        var[i] = var[i].replace("\'", '\"')
+        var[i] = json.loads(var[i])
+    return render_template('searchedResult.html', resultdata = var, title='Search Result')
 
 @app.route("/debug")
 def debug():
     print("auth: ",current_user, current_user.is_authenticated)
     return render_template('layout.html', title='Login')
-
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     form = RegistrationForm()
-
-#     if form.validate_on_submit():
-#         conn = sqlite3.connect('blog.db')
-#         c = conn.cursor()
-        
-#         #Add the new blog into the 'blogs' table
-#         query = 'insert into users VALUES (?, ?, ?)'
-#         c.execute(query, (form.username.data, form.email.data, form.password.data)) #Execute the query
-#         conn.commit() #Commit the changes
-
-#         flash(f'Account created for {form.username.data}!', 'success')
-#         return redirect(url_for('home'))
-#     return render_template('register.html', title='Register', form=form)
-
-
-# @app.route("/blog", methods=['GET', 'POST'])
-# def blog():
-#     conn = sqlite3.connect('blog.db')
-
-#     #Display all usernames stored in 'users' in the Username field
-#     conn.row_factory = lambda cursor, row: row[0]
-#     c = conn.cursor()
-#     c.execute("SELECT username FROM users")
-#     results = c.fetchall()
-#     users = [(results.index(item), item) for item in results]
-
-#     form = BlogForm()
-#     form.username.choices = users
-
-#     if form.validate_on_submit():
-#         choices = form.username.choices
-#         user =  (choices[form.username.data][1])
-#         title = form.title.data
-#         content = form.content.data
-
-#         #Add the new blog into the 'blogs' table in the database
-#         query = 'insert into blogs (username, title, content) VALUES (?, ?, ?)' #Build the query
-#         c.execute(query, (user, title, content)) #Execute the query
-#         conn.commit() #Commit the changes
-
-#         flash(f'Blog created for {user}!', 'success')
-#         return redirect(url_for('home'))
-#     return render_template('blog.html', title='Blog', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True,port=7000)

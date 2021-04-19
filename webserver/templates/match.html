@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class=container>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                
+                <div class="content-section">
+                    <legend class="border-bottom mb-4">Match Preference</legend>
+                    <div class="form-group">
+                        {{ form.preferredPosition.label(class="form-control-label") }}
+                        {{ form.preferredPosition }}
+                    </div>
+                    <div class="form-group">
+                        <p>Rank Range: 
+                        {{ form.rankRangeBot.label(class="form-control-label") }}
+                        {{ form.rankRangeBot }}
+                        {{ form.rankRangeTop.label(class="form-control-label") }}
+                        {{ form.rankRangeTop }}</p>
+                    </div>
+                    <div class="form-group">
+                        {{ form.queType.label(class="form-control-label") }}
+                        {{ form.queType }}
+                    </div>
+                </div>
+            </fieldset>
+            
+            <div class="form-group">
+                {{ form.save(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

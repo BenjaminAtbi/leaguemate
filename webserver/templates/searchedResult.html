@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article class="content-section">
+        <div class="row">
+            <table class = "col-md-12">
+                <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>League ID</th>
+                    <th>Account Rank</th>
+                    <th>TFT Rank</th>
+                    <th>Queue Type</th>
+                    <th>Gamer Server</th>
+                    <th>League Postion</th>
+                </tr>
+                </thead>    
+                <tbody>
+                {% for row in resultdata %}
+                <tr>
+                    <td>{{row.Username}}</td>
+                    <td>{{row.LeagueID}}</td>
+                    <td>{{row.AccountRank}}</td>
+                    <td>{{row.TFTRank}}</td>
+                    <td>{{row.QueueType}}</td>
+                    <td>{{row.Position}}</td>
+                    <td>{{row.GameServer}}</td>
+                    
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>       
+        </div>
+    </article>
+{% endblock content %}
