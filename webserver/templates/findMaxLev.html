@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class=container>          
+
+        <div class="row">
+            
+            <table class = "col-md-12">
+            
+                    <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>League ID</th>
+                        <th>User Level</th>
+                        <th>Gamer Server</th>
+                    </tr>
+                    </thead>    
+                    <tbody>
+                    {% for row in resultdata %}
+                    <tr>
+                        <td>{{row.Username}}</td>
+                        <td>{{row.LeagueID}}</td>
+                        <td>{{row.Gamelevel}}</td>
+                        <td>{{row.GameServer}}</td>
+                        
+                    </tr>
+                    </tbody>
+                    {% endfor %}
+            </table> 
+        </div>
+
+    </div>
+{% endblock content %}
