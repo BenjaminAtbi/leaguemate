@@ -3,7 +3,7 @@
     <article class="media content-section">
       <div class="media-body">
         {% if current_user.is_authenticated %}
-          <h2><a class="article-title" href="#">{{ form.accountname }}</a></h2>
+          <h2><a class="article-title" href="#">{{ form.username }}</a></h2>
           <p class="article-content">Email: {{ form.email }}</p>
           <p class="article-content">country: {{ form.country }}</p>
           <p class="article-content">League ID: {{ form.leagueID }}</p>

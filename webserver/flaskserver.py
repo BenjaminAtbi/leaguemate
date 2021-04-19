@@ -37,7 +37,7 @@ def profile():
     if(current_user.is_authenticated):
         data = getUserData(["UserInfor", "UserLeague"])
         print(data)
-        form.accountname = data['UserInfor'][0]['Username']
+        form.username = data['UserInfor'][0]['Username']
         form.email = data['UserInfor'][0]['Email']
         form.country = data['UserInfor'][0]['Country']
         form.leagueID = data['UserLeague'][0]['LeagueID']
@@ -69,7 +69,7 @@ def register():
 def login():   
     form = LoginForm()
     if form.validate_on_submit():
-        user = getUserbyName(form.username.data)
+        user = getUserbyID(form.accountname.data)
         if not user:
             flash(f'Incorrect Username')
         elif form.password.data != user.password:
