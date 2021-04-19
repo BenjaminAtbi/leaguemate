@@ -15,7 +15,7 @@ class ProfileForm(FlaskForm):
     leagueID = StringField('LeagueID', validators=[DataRequired()])
 
 class MatchForm(FlaskForm):
-    preferredPosition = SelectField('Preferred Position', choices=['Top', 'Jungle', 'Middle', 'Bottom', 'Support'])
+    preferredPosition = SelectField('Preferred Position', choices=['Top', 'Jungle', 'Middle', 'Bottom', 'Support', 'Fill'])
 
     rankRangeBot = SelectField('Min', choices=['N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
 
@@ -28,14 +28,19 @@ class MatchForm(FlaskForm):
     save = SubmitField('Save')
 
 class SearchForm(FlaskForm):
-    byPosition = SelectField('Preferred Position', choices=['Any', 'Top', 'Jungle', 'Middle', 'Bottom', 'Support'])
+    byPosition = SelectField('Preferred Position', choices=['Any', 'Top', 'Jungle', 'Middle', 'Bottom', 'Support', 'Fill'])
     byRank = SelectField('Rank Range', choices=['Any', 'N/A', 'Iron', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Challenger'])
     byQueType = SelectField('Preferred Queue Type', choices=['Any', 'Solo/Duo', 'Flex', 'TFT', 'ARAM'])
+    
     search = SubmitField('Search')
 
 class SearchSortForm(FlaskForm):
     sort = SubmitField('Find the Max Level User')
     returnPrev = SubmitField('Return')
+
+class filterLaneForm(FlaskForm):
+    champ = StringField('Champion', validators=[DataRequired()])
+    laneSearch = SubmitField('Filter Position')
 
 class RegisterForm(FlaskForm):
     accountname = StringField('Accountname', validators=[DataRequired(), Length(min=2, max=20)])

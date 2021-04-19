@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class=container>          
+        <form method="POST" action="">
+            {{form.hidden_tag()}}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{form.laneSearch(class="btn btn-outline-info")}}
+                </div>
+            </fieldset>
+        <div class="row">
+            
+            <table class = "col-md-12">
+            
+                    <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>League ID</th>
+                        <th>User Level</th>
+                        <th>Gamer Server</th>
+                    </tr>
+                    </thead>    
+                    <tbody>
+                    {% for row in rdata2 %}
+                    <tr>
+                        <td>{{row.Username}}</td>
+                        <td>{{row.LeagueID}}</td>
+                        <td>{{row.Gamelevel}}</td>
+                        <td>{{row.GameServer}}</td>
+                        
+                    </tr>
+                    </tbody>
+                    {% endfor %}
+            </table> 
+        </div>
+    </form>
+    </div>
+{% endblock content %}

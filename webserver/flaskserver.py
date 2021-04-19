@@ -5,11 +5,11 @@ from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import LoginForm, MatchForm, SearchForm, ProfileForm, SearchSortForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData
-from forms import LoginForm, ProfileForm, RegisterForm, MatchForm, SearchForm
+from forms import LoginForm, ProfileForm, RegisterForm, MatchForm, SearchForm, filterLaneForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData, registerUser
 import sqlite3
 from matchingActivity import getMatch, updatePreferMatch
-from searchManagement import getAllUsers, getMaxLevel, sortUsers
+from searchManagement import getAllUsers, getMaxLevel, sortUsers, searchLane
 
 conn = sqlite3.connect('leaguemate.db')
 app = Flask(__name__)
@@ -159,11 +159,26 @@ def searchedResult():
 
 @app.route("/findMaxLev",  methods=['GET', 'POST'])
 def findMaxLev():
+    form = filterLaneForm()
     var = request.args.getlist('resultdata')
     for i in range(len(var)):
         var[i] = var[i].replace("\'", '\"')
         var[i] = json.loads(var[i])
-    return render_template('findMaxLev.html', resultdata = var, title='Sorted Result')
+    if form.validate_on_submit():
+        rdata2 = searchLane(form.champ.data)
+        print("printing rdata2")
+        print(rdata2)
+        return(redirect(url_for('laneSearch', rdata2=rdata2)))
+    return render_template('findMaxLev.html', resultdata = var, title='Sorted Result', form = form)
+
+    
+@app.route("/laneSearch",  methods=['GET', 'POST'])
+def laneSearch():
+    var = request.args.getlist('rdata2')
+    for i in range(len(var)):
+        var[i] = var[i].replace("\'", '\"')
+        var[i] = json.loads(var[i])
+    return render_template('laneSearch.html', rdata2 = var, title='Filtered Champion Users')
 
 @app.route("/debug")
 def debug():

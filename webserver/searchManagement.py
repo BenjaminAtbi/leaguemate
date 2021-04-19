@@ -19,6 +19,8 @@ def getUserDataL(arg1, arg2, arg3, query):
             c.execute(query)
         elif arg3 == 'max':
             c.execute(query)
+        elif arg3 == 'lane':
+            c.execute(query, (arg1),)
         else:
             c.execute(query, (arg1, arg2, arg3),)
         result = c.fetchall()
@@ -48,6 +50,12 @@ def sortUsers(arg1, arg2, arg3):
     arg2 = switch(arg2)
     que ="select * from UserLeague as C left outer join LeagueAccount as L on L.LeagueID = C.LeagueID left outer join UserAccount as U on C.Username = U.Username WHERE L.Position = (?) AND L.AccountRank = (?) AND l.QueueType =(?) ORDER BY L.GameLevel desc"
     return getUserDataL(arg1, arg2, arg3, que)
+
+def searchLane(arg1):
+    
+    que ="select GameServer, LeagueID, GameLevel, AccountRank, QueueType, TFTRank from leagueaccount L1 where exists (select LeagueID, GameServer from (select leagueID, GameServer from userleague U1 where exists (select Username from usergoodat where U1.Username = usergoodat.Username and usergoodat.GoodAtPosition <> (?)))R1 where R1.LeagueID = L1.LeagueID)"
+    return getUserDataL(arg1, 0, 'lane', que)
+
 
 def switch(argument):
     switcher = {
