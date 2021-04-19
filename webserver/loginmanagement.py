@@ -1,4 +1,4 @@
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 import sqlite3
 
 #Turn the results from the database into a dictionary
@@ -29,12 +29,17 @@ def getUser(arg, query):
     else:
         return None
 
-def getUserData(arg, fields):
+def getUserData(tables):
     conn = sqlite3.connect('leaguemate.db')
     conn.row_factory = dict_factory
     c = conn.cursor()
-    c.execute(query, (arg,))
-    userdata = c.fetchall()
+    userdata = {}
+    for tablename in tables:
+        query = "SELECT * from "+str(tablename)+" where UserName like \'"+str(current_user.name)+"\'"
+        print(query)
+        c.execute(query)
+        userdata[tablename] = c.fetchall()
+    return userdata
 
 
 def getUserbyID(id):

@@ -6,12 +6,12 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Submit')
-    
+
 class ProfileForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Password', validators=[DataRequired()])
-
-
+    accountname = StringField('Accountname', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    country = StringField('Country', validators=[DataRequired()])
+    leagueID = StringField('LeagueID', validators=[DataRequired()])
 
 class MatchForm(FlaskForm):
     preferredPosition = SelectField('Preferred Position', choices=['Top', 'Jungle', 'Middle', 'Bottom', 'Support'])

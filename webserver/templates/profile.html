@@ -3,8 +3,10 @@
     <article class="media content-section">
       <div class="media-body">
         {% if current_user.is_authenticated %}
-          <h2><a class="article-title" href="#">{{ current_user.name }}</a></h2>
-          <p class="article-content">username: {{ current_user.id }}</p>
+          <h2><a class="article-title" href="#">{{ form.accountname }}</a></h2>
+          <p class="article-content">Email: {{ form.email }}</p>
+          <p class="article-content">country: {{ form.country }}</p>
+          <p class="article-content">League ID: {{ form.leagueID }}</p>
         {% else %}
           <h2><a class="article-title" href="#">Not logged in</a></h2>
         {% endif %}
