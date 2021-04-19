@@ -8,7 +8,7 @@ from loginmanagement import getUserbyID, getUserbyName, getUserData
 from forms import LoginForm, ProfileForm, RegisterForm, MatchForm, SearchForm
 from loginmanagement import getUserbyID, getUserbyName, getUserData, registerUser
 import sqlite3
-from matchingActivity import getMatch
+from matchingActivity import getMatch, updatePreferMatch
 from searchManagement import getAllUsers, getMaxLevel, sortUsers
 
 conn = sqlite3.connect('leaguemate.db')
@@ -98,7 +98,7 @@ def match():
     if form.validate_on_submit():
 
         # this is the query called NANI 
-        result = getMatch(form.preferredPosition.data, form.rankRangeBot.data, form.rankRangeTop, form.queType.data)
+        result = getMatch(form.preferredPosition.data, form.rankRangeBot.data, form.rankRangeTop,  form.queType.data, current_user.name)
         #result = getMatchedUserInfo(form.)
         print("test")
         print(result)
